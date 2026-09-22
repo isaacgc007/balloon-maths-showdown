@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#12346b">
+  <meta name="description" content="A lively addition, subtraction and missing-number balloon game for young learners.">
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Balloon Maths Showdown</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <button class="brand" id="homeButton" type="button" aria-label="Return to character and level selection">
+        <span class="brand-balloons" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span><strong>Balloon Maths</strong><small>SHOWDOWN</small></span>
+      </button>
+      <button class="sound-button" id="soundButton" type="button" aria-label="Turn sound off" aria-pressed="true">
+        <span aria-hidden="true">🔊</span><span class="sound-label">Sound on</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="screen setup-screen active" id="setupScreen" aria-labelledby="setupTitle">
+        <div class="setup-heading">
+          <div>
+            <p class="eyebrow">READY, AIM, POP!</p>
+            <h1 id="setupTitle">Choose your balloon hero</h1>
+          </div>
+          <p>Pick a hero and a level. Then pop the balloon with the right answer before Pop-Bot does.</p>
+        </div>
+
+        <div class="hero-picker" id="heroPicker" role="radiogroup" aria-label="Choose your hero">
+          <button class="hero-card selected" type="button" data-hero="sky" role="radio" aria-checked="true">
+            <span class="hero-art"><img src="./assets/characters/sky.png" alt="Sky in a teal flight jacket holding a toy balloon popper"></span>
+            <span class="hero-card-copy"><strong>Sky</strong><small>Cool and quick</small></span>
+            <span class="choice-check" aria-hidden="true">✓</span>
+          </button>
+          <button class="hero-card" type="button" data-hero="sunny" role="radio" aria-checked="false">
+            <span class="hero-art"><img src="./assets/characters/sunny.png" alt="Sunny in bright yellow overalls holding a toy balloon popper"></span>
+            <span class="hero-card-copy"><strong>Sunny</strong><small>Bright and bold</small></span>
+            <span class="choice-check" aria-hidden="true">✓</span>
+          </button>
+          <button class="hero-card" type="button" data-hero="blaze" role="radio" aria-checked="false">
+            <span class="hero-art"><img src="./assets/characters/blaze.png" alt="Blaze in a coral hoodie holding a toy balloon popper"></span>
+            <span class="hero-card-copy"><strong>Blaze</strong><small>Fast and fearless</small></span>
+            <span class="choice-check" aria-hidden="true">✓</span>
+          </button>
+        </div>
+
+        <div class="level-panel">
+          <div class="section-title">
+            <div><p class="eyebrow">CHOOSE A LEVEL</p><h2>How high shall we count?</h2></div>
+            <span class="selection-summary" id="selectionSummary">Sky · within 20</span>
+          </div>
+          <div class="level-picker" id="levelPicker" role="radiogroup" aria-label="Choose a maths level">
+            <button class="level-card selected" type="button" data-limit="20" role="radio" aria-checked="true"><span>1</span><strong>Within 20</strong><small>Best: <b data-best="20">0</b> / 5</small></button>
+            <button class="level-card" type="button" data-limit="30" role="radio" aria-checked="false"><span>2</span><strong>Within 30</strong><small>Best: <b data-best="30">0</b> / 5</small></button>
+            <button class="level-card" type="button" data-limit="40" role="radio" aria-checked="false"><span>3</span><strong>Within 40</strong><small>Best: <b data-best="40">0</b> / 5</small></button>
+            <button class="level-card" type="button" data-limit="50" role="radio" aria-checked="false"><span>4</span><strong>Within 50</strong><small>Best: <b data-best="50">0</b> / 5</small></button>
+            <button class="level-card" type="button" data-limit="60" role="radio" aria-checked="false"><span>5</span><strong>Within 60</strong><small>Best: <b data-best="60">0</b> / 5</small></button>
+          </div>
+        </div>
+
+        <button class="start-button" id="startButton" type="button"><span>Start the showdown</span><span aria-hidden="true">→</span></button>
+      </section>
+
+      <section class="screen game-screen" id="gameScreen" aria-labelledby="questionText">
+        <div class="game-status">
+          <div class="score-card player-score"><img id="scoreHeroImage" src="./assets/characters/sky.png" alt=""><span><small id="scoreHeroName">Sky</small><strong id="playerScore">0</strong></span></div>
+          <div class="round-status"><span id="roundLabel">ROUND 1 OF 5</span><div class="round-dots" id="roundDots" aria-hidden="true"></div></div>
+          <div class="score-card bot-score"><span><small>Pop-Bot</small><strong id="opponentScore">0</strong></span><img src="./assets/characters/pop-bot.png" alt=""></div>
+        </div>
+
+        <div class="arena" id="arena">
+          <div class="sky-decor" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="question-board">
+            <span id="questionType">Addition</span>
+            <h2 id="questionText">8 + 7 = ?</h2>
+          </div>
+
+          <div class="turn-panel" id="turnPanel">
+            <div class="timer" id="timer" role="timer" aria-label="20 seconds left"><span id="timerValue">20</span><small>SEC</small></div>
+            <div><small id="turnEyebrow">YOUR TURN</small><strong id="turnText">Drag Sky under a balloon</strong></div>
+          </div>
+
+          <div class="balloon-field" id="balloonField" role="listbox" aria-label="Answer balloons"></div>
+          <div class="flight-layer" id="flightLayer" aria-hidden="true"></div>
+
+          <div class="bot-platform" id="botPlatform" aria-label="Pop-Bot opponent">
+            <div class="bot-thought" id="botThought">Thinking…</div>
+            <img src="./assets/characters/pop-bot.png" alt="Pop-Bot, your friendly robot opponent">
+          </div>
+
+          <div class="hero-track" id="heroTrack">
+            <div class="lane-line" aria-hidden="true"></div>
+            <div class="hero-mover" id="heroMover" style="--hero-x: 12.5">
+              <div class="aim-marker" aria-hidden="true"></div>
+              <img id="gameHeroImage" src="./assets/characters/sky.png" alt="Sky, your selected hero">
+              <span class="drag-hint" id="dragHint">↔ DRAG ME</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-bar">
+          <button class="nudge-button" id="leftButton" type="button" aria-label="Move to the previous balloon">←</button>
+          <div class="message" id="message" role="status" aria-live="polite">Your turn! Drag your hero and choose a balloon.</div>
+          <button class="shoot-button" id="shootButton" type="button"><span class="shoot-icon" aria-hidden="true">✦</span><span>SHOOT!</span></button>
+          <button class="nudge-button" id="rightButton" type="button" aria-label="Move to the next balloon">→</button>
+        </div>
+      </section>
+
+      <section class="screen result-screen" id="resultScreen" aria-labelledby="resultTitle">
+        <div class="confetti" id="confetti" aria-hidden="true"></div>
+        <div class="result-card">
+          <p class="eyebrow" id="resultEyebrow">SHOWDOWN COMPLETE</p>
+          <h1 id="resultTitle">You won!</h1>
+          <p id="resultMessage">Brilliant balloon popping!</p>
+          <div class="result-stage">
+            <div class="result-character"><img id="resultHeroImage" src="./assets/characters/sky.png" alt=""><strong id="resultHeroName">Sky</strong></div>
+            <div class="final-score"><span id="finalPlayerScore">3</span><small>FINAL SCORE</small><span id="finalOpponentScore">2</span></div>
+            <div class="result-character bot"><img src="./assets/characters/pop-bot.png" alt="Pop-Bot"><strong>Pop-Bot</strong></div>
+          </div>
+          <div class="best-badge" id="bestBadge">★ New best for Level 1!</div>
+          <div class="result-actions">
+            <button class="secondary-button" id="changeButton" type="button">Change hero or level</button>
+            <button class="start-button compact" id="replayButton" type="button"><span>Play again</span><span aria-hidden="true">↻</span></button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./js/game.js"></script>
+</body>
+</html>
